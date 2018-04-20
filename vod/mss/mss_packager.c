@@ -13,7 +13,7 @@
 // manifest constants
 #define MSS_MANIFEST_HEADER_PREFIX \
 	"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"	\
-	"<SmoothStreamingMedia MajorVersion=\"2\" MinorVersion=\"0\" Duration=\"%uL\""
+	"<SmoothStreamingMedia MajorVersion=\"2\" MinorVersion=\"0\" Duration=\"%uL\" TimeScale=\"10000000\""
 
 #define MSS_MANIFEST_HEADER_LIVE_ATTRIBUTES \
 	" DVRWindowLength=\"%uL\" LookAheadFragmentCount=\"%uD\" IsLive=\"TRUE\" CanSeek=\"TRUE\" CanPause=\"TRUE\""
@@ -113,26 +113,26 @@ static const char* stream_type_by_media_type[] = {
 	MSS_STREAM_TYPE_TEXT
 };
 
-static u_char*
-mss_write_manifest_chunks(u_char* p, segment_durations_t* segment_durations)
-{
-	segment_duration_item_t* cur_item;
-	segment_duration_item_t* last_item = segment_durations->items + segment_durations->item_count;
-	uint32_t last_segment_index;
-	uint32_t segment_index;
+// static u_char*
+// mss_write_manifest_chunks(u_char* p, segment_durations_t* segment_durations)
+// {
+// 	segment_duration_item_t* cur_item;
+// 	segment_duration_item_t* last_item = segment_durations->items + segment_durations->item_count;
+// 	uint32_t last_segment_index;
+// 	uint32_t segment_index;
 
-	for (cur_item = segment_durations->items; cur_item < last_item; cur_item++)
-	{
-		segment_index = cur_item->segment_index;
-		last_segment_index = segment_index + cur_item->repeat_count;
-		for (; segment_index < last_segment_index; segment_index++)
-		{
-			p = vod_sprintf(p, MSS_CHUNK_TAG, segment_index, rescale_time(cur_item->duration, segment_durations->timescale, MSS_TIMESCALE));
-		}
-	}
+// 	for (cur_item = segment_durations->items; cur_item < last_item; cur_item++)
+// 	{
+// 		segment_index = cur_item->segment_index;
+// 		last_segment_index = segment_index + cur_item->repeat_count;
+// 		for (; segment_index < last_segment_index; segment_index++)
+// 		{
+// 			p = vod_sprintf(p, MSS_CHUNK_TAG, segment_index, rescale_time(cur_item->duration, segment_durations->timescale, MSS_TIMESCALE));
+// 		}
+// 	}
 
-	return p;
-}
+// 	return p;
+// }
 
 static u_char*
 mss_write_manifest_chunks_live(u_char* p, segment_durations_t* segment_durations)
@@ -584,8 +584,8 @@ mss_packager_build_manifest(
 		switch (media_set->type)
 		{
 		case MEDIA_SET_VOD:
-			p = mss_write_manifest_chunks(p, &segment_durations[media_type]);
-			break;
+			// p = mss_write_manifest_chunks(p, &segment_durations[media_type]);
+			// break;
 
 		case MEDIA_SET_LIVE:
 			p = mss_write_manifest_chunks_live(p, &segment_durations[media_type]);
